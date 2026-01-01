@@ -1,0 +1,23 @@
+# NautilusTrader - High-performance algorithmic trading platform
+nautilus_trader>=1.200.0
+
+# Data handling
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+plotly>=5.18.0
+matplotlib>=3.8.0
+
+# Data sources (optional)
+yfinance>=0.2.0
+ccxt>=4.0.0
+
+# Jupyter support
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Development tools
+pytest>=7.0.0
+black>=23.0.0
+ruff>=0.1.0

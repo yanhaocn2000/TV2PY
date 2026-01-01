@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tv2py"
+version = "0.1.0"
+description = "TradingView to Python backtesting framework powered by NautilusTrader"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+authors = [
+    {name = "TV2PY Team"}
+]
+keywords = ["trading", "backtesting", "quantitative", "finance", "nautilus"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
+dependencies = [
+    "nautilus_trader>=1.200.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+viz = [
+    "plotly>=5.18.0",
+    "matplotlib>=3.8.0",
+]
+data = [
+    "yfinance>=0.2.0",
+    "ccxt>=4.0.0",
+]
+jupyter = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+]
+all = [
+    "tv2py[dev,viz,data,jupyter]",
+]
+
+[project.urls]
+Homepage = "https://github.com/yanhaocn2000/TV2PY"
+Documentation = "https://github.com/yanhaocn2000/TV2PY#readme"
+Repository = "https://github.com/yanhaocn2000/TV2PY"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
