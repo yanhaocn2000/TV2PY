@@ -1,15 +1,19 @@
 # NautilusTrader - High-performance algorithmic trading platform
 nautilus_trader>=1.200.0
 
+# PyneCore - Pine Script compatible indicators
+pynesys-pynecore>=0.1.0
+
 # Data handling
 pandas>=2.0.0
 numpy>=1.24.0
+pyarrow>=14.0.0
 
 # Visualization
 plotly>=5.18.0
 matplotlib>=3.8.0
 
-# Data sources (optional)
+# Data sources
 yfinance>=0.2.0
 ccxt>=4.0.0
 
