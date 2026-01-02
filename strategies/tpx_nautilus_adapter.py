@@ -331,66 +331,101 @@ class TPXSlingShotBacktest:
                         if take_profit == 0 or new_tp < take_profit:
                             take_profit = new_tp
 
-            # 检查止损/止盈
+            # 检查止损/止盈 (使用 TradingView 的 bar 内价格运动假设)
             if position == 1:  # 多头
-                if low[i] <= stop_loss:
-                    # 止损
-                    pnl = (stop_loss - entry_price) / entry_price - self.commission
-                    equity *= (1 + pnl)
-                    trades.append({
-                        'entry_idx': entry_idx,
-                        'exit_idx': i,
-                        'side': 'long',
-                        'entry_price': entry_price,
-                        'exit_price': stop_loss,
-                        'pnl_pct': pnl * 100,
-                        'exit_reason': 'stop_loss'
-                    })
-                    position = 0
-                elif take_profit != float('inf') and high[i] >= take_profit:
-                    # 止盈
-                    pnl = (take_profit - entry_price) / entry_price - self.commission
-                    equity *= (1 + pnl)
-                    trades.append({
-                        'entry_idx': entry_idx,
-                        'exit_idx': i,
-                        'side': 'long',
-                        'entry_price': entry_price,
-                        'exit_price': take_profit,
-                        'pnl_pct': pnl * 100,
-                        'exit_reason': 'take_profit'
-                    })
-                    position = 0
+                # TradingView 假设: Open 更接近 High → 先涨后跌
+                #                   Open 更接近 Low  → 先跌后涨
+                open_closer_to_high = abs(open_[i] - high[i]) < abs(open_[i] - low[i])
+
+                if open_closer_to_high:
+                    # 顺序: Open → High → Low → Close
+                    # 先检查止盈，再检查止损
+                    if take_profit != float('inf') and high[i] >= take_profit:
+                        pnl = (take_profit - entry_price) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'long',
+                            'entry_price': entry_price, 'exit_price': take_profit,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'take_profit'
+                        })
+                        position = 0
+                    elif low[i] <= stop_loss:
+                        pnl = (stop_loss - entry_price) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'long',
+                            'entry_price': entry_price, 'exit_price': stop_loss,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'stop_loss'
+                        })
+                        position = 0
+                else:
+                    # 顺序: Open → Low → High → Close
+                    # 先检查止损，再检查止盈
+                    if low[i] <= stop_loss:
+                        pnl = (stop_loss - entry_price) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'long',
+                            'entry_price': entry_price, 'exit_price': stop_loss,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'stop_loss'
+                        })
+                        position = 0
+                    elif take_profit != float('inf') and high[i] >= take_profit:
+                        pnl = (take_profit - entry_price) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'long',
+                            'entry_price': entry_price, 'exit_price': take_profit,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'take_profit'
+                        })
+                        position = 0
 
             elif position == -1:  # 空头
-                if high[i] >= stop_loss:
-                    # 止损
-                    pnl = (entry_price - stop_loss) / entry_price - self.commission
-                    equity *= (1 + pnl)
-                    trades.append({
-                        'entry_idx': entry_idx,
-                        'exit_idx': i,
-                        'side': 'short',
-                        'entry_price': entry_price,
-                        'exit_price': stop_loss,
-                        'pnl_pct': pnl * 100,
-                        'exit_reason': 'stop_loss'
-                    })
-                    position = 0
-                elif take_profit != 0 and low[i] <= take_profit:
-                    # 止盈
-                    pnl = (entry_price - take_profit) / entry_price - self.commission
-                    equity *= (1 + pnl)
-                    trades.append({
-                        'entry_idx': entry_idx,
-                        'exit_idx': i,
-                        'side': 'short',
-                        'entry_price': entry_price,
-                        'exit_price': take_profit,
-                        'pnl_pct': pnl * 100,
-                        'exit_reason': 'take_profit'
-                    })
-                    position = 0
+                # TradingView bar 内价格运动假设
+                open_closer_to_high = abs(open_[i] - high[i]) < abs(open_[i] - low[i])
+
+                if open_closer_to_high:
+                    # 顺序: Open → High → Low → Close
+                    # 先检查止损，再检查止盈
+                    if high[i] >= stop_loss:
+                        pnl = (entry_price - stop_loss) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'short',
+                            'entry_price': entry_price, 'exit_price': stop_loss,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'stop_loss'
+                        })
+                        position = 0
+                    elif take_profit != 0 and low[i] <= take_profit:
+                        pnl = (entry_price - take_profit) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'short',
+                            'entry_price': entry_price, 'exit_price': take_profit,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'take_profit'
+                        })
+                        position = 0
+                else:
+                    # 顺序: Open → Low → High → Close
+                    # 先检查止盈，再检查止损
+                    if take_profit != 0 and low[i] <= take_profit:
+                        pnl = (entry_price - take_profit) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'short',
+                            'entry_price': entry_price, 'exit_price': take_profit,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'take_profit'
+                        })
+                        position = 0
+                    elif high[i] >= stop_loss:
+                        pnl = (entry_price - stop_loss) / entry_price - self.commission
+                        equity *= (1 + pnl)
+                        trades.append({
+                            'entry_idx': entry_idx, 'exit_idx': i, 'side': 'short',
+                            'entry_price': entry_price, 'exit_price': stop_loss,
+                            'pnl_pct': pnl * 100, 'exit_reason': 'stop_loss'
+                        })
+                        position = 0
 
             # 新信号
             if position == 0:
