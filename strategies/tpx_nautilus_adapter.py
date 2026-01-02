@@ -287,11 +287,50 @@ class TPXSlingShotBacktest:
         entry_idx = 0
         stop_loss = 0
         take_profit = 0
+        highest_since_entry = 0  # 用于追踪止盈
+        lowest_since_entry = float('inf')
 
         equity = self.initial_capital
         equity_curve = [equity]
 
+        # 止损止盈模式
+        use_trailing_tp = self.params.get('use_trailing_tp', True)  # 默认使用追踪止盈
+        use_trailing_sl = self.params.get('use_trailing_sl', False)  # 默认不使用追踪止损
+        trailing_activation_pct = self.params.get('trailing_activation_pct', 1.5)  # 追踪止盈激活阈值
+
         for i in range(1, n):
+            # 更新持仓期间的最高/最低价
+            if position == 1:
+                highest_since_entry = max(highest_since_entry, high[i])
+
+                # 追踪止损: 止损跟随最高价
+                if use_trailing_sl and not np.isnan(atr[i]):
+                    new_sl = highest_since_entry - atr[i] * self.params['atr_mult']
+                    stop_loss = max(stop_loss, new_sl)
+
+                # 追踪止盈: 价格涨幅超过阈值后激活
+                if use_trailing_tp:
+                    if highest_since_entry > entry_price * (1 + trailing_activation_pct / 100):
+                        # 追踪止盈 = 最高价 - ATR × 倍数
+                        new_tp = highest_since_entry - atr[i] * self.params['trail_atr_mult'] * 0.5
+                        if take_profit == float('inf') or new_tp > take_profit:
+                            take_profit = new_tp
+
+            elif position == -1:
+                lowest_since_entry = min(lowest_since_entry, low[i])
+
+                # 追踪止损
+                if use_trailing_sl and not np.isnan(atr[i]):
+                    new_sl = lowest_since_entry + atr[i] * self.params['atr_mult']
+                    stop_loss = min(stop_loss, new_sl)
+
+                # 追踪止盈
+                if use_trailing_tp:
+                    if lowest_since_entry < entry_price * (1 - trailing_activation_pct / 100):
+                        new_tp = lowest_since_entry + atr[i] * self.params['trail_atr_mult'] * 0.5
+                        if take_profit == 0 or new_tp < take_profit:
+                            take_profit = new_tp
+
             # 检查止损/止盈
             if position == 1:  # 多头
                 if low[i] <= stop_loss:
@@ -308,7 +347,7 @@ class TPXSlingShotBacktest:
                         'exit_reason': 'stop_loss'
                     })
                     position = 0
-                elif high[i] >= take_profit:
+                elif take_profit != float('inf') and high[i] >= take_profit:
                     # 止盈
                     pnl = (take_profit - entry_price) / entry_price - self.commission
                     equity *= (1 + pnl)
@@ -338,7 +377,7 @@ class TPXSlingShotBacktest:
                         'exit_reason': 'stop_loss'
                     })
                     position = 0
-                elif low[i] <= take_profit:
+                elif take_profit != 0 and low[i] <= take_profit:
                     # 止盈
                     pnl = (entry_price - take_profit) / entry_price - self.commission
                     equity *= (1 + pnl)
@@ -359,16 +398,28 @@ class TPXSlingShotBacktest:
                     position = 1
                     entry_price = close[i]
                     entry_idx = i
+                    highest_since_entry = high[i]
+                    # 固定 ATR 止损
                     stop_loss = entry_price - atr[i] * self.params['atr_mult']
-                    take_profit = entry_price + atr[i] * self.params['trail_atr_mult']
+                    # 追踪止盈模式: 初始设为无穷大
+                    if use_trailing_tp:
+                        take_profit = float('inf')
+                    else:
+                        take_profit = entry_price + atr[i] * self.params['trail_atr_mult']
                     equity *= (1 - self.commission)  # 入场手续费
 
                 elif short_signal[i] and not np.isnan(atr[i]):
                     position = -1
                     entry_price = close[i]
                     entry_idx = i
+                    lowest_since_entry = low[i]
+                    # 固定 ATR 止损
                     stop_loss = entry_price + atr[i] * self.params['atr_mult']
-                    take_profit = entry_price - atr[i] * self.params['trail_atr_mult']
+                    # 追踪止盈模式
+                    if use_trailing_tp:
+                        take_profit = 0
+                    else:
+                        take_profit = entry_price - atr[i] * self.params['trail_atr_mult']
                     equity *= (1 - self.commission)
 
             equity_curve.append(equity)
