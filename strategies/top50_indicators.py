@@ -3,7 +3,7 @@ TradingView Top 50 Indicators - Python Conversion Project
 
 基于 TradingView 社区最受欢迎的指标，按类别和优先级排列
 
-转换进度: 48/50 完成 (96%)
+转换进度: 50/50 完成 (100%) ✅
 """
 
 # ============================================================
@@ -31,8 +31,8 @@ TOP_50_INDICATORS = {
             "likes": "78K+",
             "category": "price_action",
             "status": "completed",
-            "file": "strategies/swing_detection.py",
-            "note": "基础Market Structure实现"
+            "file": "strategies/smart_money_concepts.py",
+            "note": "完整实现: OB, FVG, BOS, CHoCH, Liquidity"
         },
         {
             "rank": 3,
@@ -76,9 +76,9 @@ TOP_50_INDICATORS = {
             "author": "TradingView",
             "likes": "30K+",
             "category": "volume",
-            "status": "pending",
-            "complexity": "high",
-            "note": "需要tick级数据支持"
+            "status": "completed",
+            "file": "strategies/volume_profile.py",
+            "note": "使用OHLCV近似计算"
         },
         {
             "rank": 8,
@@ -198,7 +198,9 @@ INDICATOR_FILES = {
     "linear_regression.py": ["Linear Regression Channel", "Linear Regression"],
     "volatility_stop.py": ["Volatility Stop", "ATR Trailing Stop"],
     "schaff_trend_cycle.py": ["Schaff Trend Cycle", "STC"],
-    "swing_detection.py": ["Market Structure", "Swing Detection", "Smart Money Concepts"],
+    "swing_detection.py": ["Market Structure", "Swing Detection"],
+    "smart_money_concepts.py": ["Smart Money Concepts", "Order Blocks", "FVG", "BOS", "CHoCH"],
+    "volume_profile.py": ["Volume Profile", "POC", "Value Area", "VAH", "VAL"],
     "divergence.py": ["RSI Divergence", "MACD Divergence", "Divergence Detection"],
     "misc_indicators.py": ["Heikin Ashi", "TRIX", "Ultimate Oscillator", "Aroon", "Connors RSI", "KST", "Coppock Curve"],
 }
