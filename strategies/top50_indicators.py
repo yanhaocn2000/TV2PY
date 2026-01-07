@@ -3,7 +3,7 @@ TradingView Top 50 Indicators - Python Conversion Project
 
 基于 TradingView 社区最受欢迎的指标，按类别和优先级排列
 
-转换进度: 40/50 完成 (80%)
+转换进度: 48/50 完成 (96%)
 """
 
 # ============================================================
@@ -30,9 +30,9 @@ TOP_50_INDICATORS = {
             "author": "LuxAlgo",
             "likes": "78K+",
             "category": "price_action",
-            "status": "pending",
-            "complexity": "high",
-            "note": "需要复杂的价格行为分析"
+            "status": "completed",
+            "file": "strategies/swing_detection.py",
+            "note": "基础Market Structure实现"
         },
         {
             "rank": 3,
@@ -104,9 +104,8 @@ TOP_50_INDICATORS = {
             "author": "LuxAlgo",
             "likes": "22K+",
             "category": "price_action",
-            "status": "pending",
-            "complexity": "high",
-            "note": "需要复杂的swing high/low检测"
+            "status": "completed",
+            "file": "strategies/swing_detection.py"
         },
     ],
 
@@ -128,7 +127,7 @@ TOP_50_INDICATORS = {
         {"rank": 22, "name": "OBV (On Balance Volume)", "category": "volume", "status": "completed", "file": "strategies/volume_indicators.py"},
         {"rank": 23, "name": "Williams %R", "category": "oscillator", "status": "completed", "file": "strategies/williams_r.py"},
         {"rank": 24, "name": "Pivot Points", "category": "support_resistance", "status": "completed", "file": "strategies/pivot_points.py"},
-        {"rank": 25, "name": "Fibonacci Retracement", "category": "support_resistance", "status": "pending", "note": "需要swing检测"},
+        {"rank": 25, "name": "Fibonacci Retracement", "category": "support_resistance", "status": "completed", "file": "strategies/fibonacci.py"},
     ],
 
     # ========================================
@@ -141,12 +140,12 @@ TOP_50_INDICATORS = {
         {"rank": 29, "name": "Keltner Channel", "category": "volatility", "status": "completed", "file": "strategies/keltner_channel.py"},
         {"rank": 30, "name": "Money Flow Index (MFI)", "category": "volume", "status": "completed", "file": "strategies/volume_indicators.py"},
         {"rank": 31, "name": "Chaikin Money Flow", "category": "volume", "status": "completed", "file": "strategies/volume_indicators.py"},
-        {"rank": 32, "name": "Elder Ray Index", "category": "momentum", "status": "pending"},
+        {"rank": 32, "name": "Elder Ray Index", "category": "momentum", "status": "completed", "file": "strategies/elder_ray.py"},
         {"rank": 33, "name": "Awesome Oscillator", "category": "momentum", "status": "completed", "file": "strategies/awesome_oscillator.py"},
         {"rank": 34, "name": "Ultimate Oscillator", "category": "oscillator", "status": "completed", "file": "strategies/misc_indicators.py"},
         {"rank": 35, "name": "TRIX", "category": "momentum", "status": "completed", "file": "strategies/misc_indicators.py"},
-        {"rank": 36, "name": "Mass Index", "category": "volatility", "status": "pending"},
-        {"rank": 37, "name": "Choppiness Index", "category": "volatility", "status": "pending"},
+        {"rank": 36, "name": "Mass Index", "category": "volatility", "status": "completed", "file": "strategies/mass_index.py"},
+        {"rank": 37, "name": "Choppiness Index", "category": "volatility", "status": "completed", "file": "strategies/choppiness_index.py"},
         {"rank": 38, "name": "Hull Moving Average", "category": "trend", "status": "completed", "file": "strategies/moving_averages.py"},
         {"rank": 39, "name": "TEMA (Triple EMA)", "category": "trend", "status": "completed", "file": "strategies/moving_averages.py"},
         {"rank": 40, "name": "DEMA (Double EMA)", "category": "trend", "status": "completed", "file": "strategies/moving_averages.py"},
@@ -157,12 +156,12 @@ TOP_50_INDICATORS = {
     # ========================================
     "tier4_special": [
         {"rank": 41, "name": "TTM Squeeze", "category": "volatility", "status": "completed", "file": "strategies/squeeze_momentum.py", "note": "与Squeeze Momentum类似"},
-        {"rank": 42, "name": "Linear Regression Channel", "category": "trend", "status": "pending"},
-        {"rank": 43, "name": "Volatility Stop", "category": "volatility", "status": "pending"},
+        {"rank": 42, "name": "Linear Regression Channel", "category": "trend", "status": "completed", "file": "strategies/linear_regression.py"},
+        {"rank": 43, "name": "Volatility Stop", "category": "volatility", "status": "completed", "file": "strategies/volatility_stop.py"},
         {"rank": 44, "name": "Connors RSI", "category": "oscillator", "status": "completed", "file": "strategies/misc_indicators.py"},
-        {"rank": 45, "name": "RSI Divergence", "category": "divergence", "status": "pending", "note": "需要背离检测算法"},
-        {"rank": 46, "name": "MACD Histogram Divergence", "category": "divergence", "status": "pending", "note": "需要背离检测算法"},
-        {"rank": 47, "name": "Schaff Trend Cycle", "category": "trend", "status": "pending"},
+        {"rank": 45, "name": "RSI Divergence", "category": "divergence", "status": "completed", "file": "strategies/divergence.py"},
+        {"rank": 46, "name": "MACD Histogram Divergence", "category": "divergence", "status": "completed", "file": "strategies/divergence.py", "note": "使用通用背离检测"},
+        {"rank": 47, "name": "Schaff Trend Cycle", "category": "trend", "status": "completed", "file": "strategies/schaff_trend_cycle.py"},
         {"rank": 48, "name": "Know Sure Thing (KST)", "category": "momentum", "status": "completed", "file": "strategies/misc_indicators.py"},
         {"rank": 49, "name": "Coppock Curve", "category": "momentum", "status": "completed", "file": "strategies/misc_indicators.py"},
         {"rank": 50, "name": "Aroon Indicator", "category": "trend", "status": "completed", "file": "strategies/misc_indicators.py"},
@@ -189,9 +188,18 @@ INDICATOR_FILES = {
     "volume_indicators.py": ["OBV", "MFI", "CMF", "A/D Line"],
     "williams_r.py": ["Williams %R"],
     "pivot_points.py": ["Pivot Points"],
+    "fibonacci.py": ["Fibonacci Retracement", "Fibonacci Extension"],
     "parabolic_sar.py": ["Parabolic SAR"],
     "donchian_channels.py": ["Donchian Channels", "Turtle Trading"],
     "awesome_oscillator.py": ["Awesome Oscillator"],
+    "elder_ray.py": ["Elder Ray Index", "Bull Power", "Bear Power"],
+    "mass_index.py": ["Mass Index"],
+    "choppiness_index.py": ["Choppiness Index"],
+    "linear_regression.py": ["Linear Regression Channel", "Linear Regression"],
+    "volatility_stop.py": ["Volatility Stop", "ATR Trailing Stop"],
+    "schaff_trend_cycle.py": ["Schaff Trend Cycle", "STC"],
+    "swing_detection.py": ["Market Structure", "Swing Detection", "Smart Money Concepts"],
+    "divergence.py": ["RSI Divergence", "MACD Divergence", "Divergence Detection"],
     "misc_indicators.py": ["Heikin Ashi", "TRIX", "Ultimate Oscillator", "Aroon", "Connors RSI", "KST", "Coppock Curve"],
 }
 
@@ -248,6 +256,11 @@ def get_pending_indicators():
     return sorted(pending, key=lambda x: x["rank"])
 
 
+def list_all_files():
+    """列出所有指标文件"""
+    return list(INDICATOR_FILES.keys())
+
+
 if __name__ == "__main__":
     stats = get_stats()
     print("=" * 70)
@@ -265,10 +278,17 @@ if __name__ == "__main__":
     for ind in get_completed_indicators():
         print(f"  ✅ #{ind['rank']:2d} {ind['name']:<35} [{ind['category']}]")
 
+    pending = get_pending_indicators()
+    if pending:
+        print()
+        print("=" * 70)
+        print("Pending Indicators:")
+        print("=" * 70)
+        for ind in pending:
+            note = f" - {ind['note']}" if ind['note'] else ""
+            print(f"  ⏳ #{ind['rank']:2d} {ind['name']:<35} [{ind['category']}]{note}")
+
     print()
     print("=" * 70)
-    print("Pending Indicators:")
+    print(f"Total Files: {len(INDICATOR_FILES)}")
     print("=" * 70)
-    for ind in get_pending_indicators():
-        note = f" - {ind['note']}" if ind['note'] else ""
-        print(f"  ⏳ #{ind['rank']:2d} {ind['name']:<35} [{ind['category']}]{note}")
