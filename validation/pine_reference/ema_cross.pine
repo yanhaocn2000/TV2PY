@@ -1,0 +1,28 @@
+//@version=5
+strategy("EMA Cross Strategy", overlay=true)
+
+// 参数
+fast_length = input.int(12, "Fast EMA Length")
+slow_length = input.int(26, "Slow EMA Length")
+
+// 计算指标
+fast_ema = ta.ema(close, fast_length)
+slow_ema = ta.ema(close, slow_length)
+
+// 交叉信号
+long_signal = ta.crossover(fast_ema, slow_ema)
+short_signal = ta.crossunder(fast_ema, slow_ema)
+
+// 绘制
+plot(fast_ema, "Fast EMA", color.blue)
+plot(slow_ema, "Slow EMA", color.red)
+
+// 交易逻辑
+if long_signal
+    strategy.entry("Long", strategy.long)
+
+if short_signal
+    strategy.close("Long")
+
+// 导出数据用于验证 (在 TradingView 中使用)
+// 可以通过 "导出图表数据" 获取 OHLCV + 指标值

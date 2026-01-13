@@ -1,0 +1,46 @@
+# Backtest Configuration Example
+# ================================
+
+# Engine settings
+engine:
+  trader_id: "BACKTESTER-001"
+  log_level: "INFO"
+  bypass_logging: false
+
+# Venue configuration
+venue:
+  name: "BINANCE"
+  oms_type: "NETTING"
+  account_type: "CASH"
+  starting_balance: 10000
+  base_currency: "USDT"
+
+# Strategy configuration
+strategy:
+  name: "EMACross"
+  instrument_id: "ETHUSDT.BINANCE"
+  bar_type: "ETHUSDT.BINANCE-1-MINUTE-LAST-INTERNAL"
+  params:
+    fast_ema_period: 10
+    slow_ema_period: 20
+    trade_size: 0.1
+
+# Data configuration
+data:
+  source: "csv"  # csv, binance, yfinance
+  path: "data/ethusdt_1m.csv"
+  start_date: "2024-01-01"
+  end_date: "2024-12-31"
+
+# Risk management
+risk:
+  max_position_size: 1.0
+  max_drawdown_pct: 0.1
+  daily_loss_limit: 500
+
+# Optimization settings (for grid search)
+optimization:
+  enabled: false
+  params:
+    fast_ema_period: [5, 10, 15, 20]
+    slow_ema_period: [20, 30, 50, 100]
